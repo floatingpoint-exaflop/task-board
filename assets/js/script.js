@@ -1,16 +1,9 @@
 // ? Grab references to the important DOM elements.
-const timeDisplayEl = $('#time-display');
 const taskDisplayEl = $('#task-display');
 const taskModalEl = $('#modal-body');
 const taskNameInputEl = $('#task-name-input');
 const taskDescInputEl = $('#task-desc-input');
 const taskDateInputEl = $('#taskDueDate');
-
-// ? Helper function that displays the time, this is called every second in the setInterval function below.
-function displayTime() {
-  const rightNow = dayjs().format('MMM DD, YYYY [at] hh:mm:ss a');
-  timeDisplayEl.text(rightNow);
-}
 
 // ? Reads tasks from local storage and returns array of task objects.
 // ? If there are no tasks in localStorage, it initializes an empty array ([]) and returns it.
@@ -190,20 +183,9 @@ function handleDrop(event, ui) {
   printTaskData();
 }
 
-// ? Add event listener to the form element, listen for a submit event, and call the `handleTaskFormSubmit` function.
-taskModalEl.on('submit', handleTaskFormSubmit);
-
-// ? Because the cards are dynamically added to the screen, we have to use jQuery event delegation to listen for clicks on the added cards delete button.
-// ? We listen for a click on the parent element, and THEN check if the target of the click is the delete button. If it is, we call the `handleDeleteTask` function
-taskDisplayEl.on('click', '.btn-delete-task', handleDeleteTask);
-
-// ? Call the `displayTime` function once on page load and then every second after that.
-displayTime();
-setInterval(displayTime, 1000);
 
 // ? When the document is ready, print the task data to the screen and make the lanes droppable. Also, initialize the date picker.
 $(document).ready(function () {
-  // Print task data to the screen on page load if there is any
   printTaskData();
 
   // Initialize date picker
