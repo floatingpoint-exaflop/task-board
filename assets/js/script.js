@@ -135,13 +135,13 @@ function handleDeleteTask() {
 function handleTaskFormSubmit(event) {
   event.preventDefault();
 
-  // ? Read user input from the form
+  // Read user input from the form
   const taskName = taskNameInputEl.val().trim();
-  const taskDesc = taskDescInputEl.val(); // don't need to trim select input
+  const taskDesc = taskDescInputEl.val().trim(); // Don't need to trim select input
   const taskDate = taskDateInputEl.val(); // yyyy-mm-dd format
 
   const newTask = {
-    // ? Here we use a Web API called `crypto` to generate a random id for our task. This is a unique identifier that we can use to find the task in the array. `crypto` is a built-in module that we can use in the browser and Nodejs.    id: crypto.randomUUID(),
+    // Generate a random id for the task
     id: crypto.randomUUID(),
     name: taskName,
     type: taskDesc,
@@ -149,20 +149,23 @@ function handleTaskFormSubmit(event) {
     status: 'to-do',
   };
 
-  // ? Pull the tasks from localStorage and push the new task to the array
+  // Pull the tasks from localStorage and push the new task to the array
   const tasks = readTasksFromStorage();
   tasks.push(newTask);
 
-  // ? Save the updated tasks array to localStorage
+  // Save the updated tasks array to localStorage
   saveTasksToStorage(tasks);
 
-  // ? Print task data back to the screen
+  // Print task data back to the screen
   printTaskData();
 
-  // ? Clear the form inputs
+  // Clear the form inputs
   taskNameInputEl.val('');
   taskDescInputEl.val('');
   taskDateInputEl.val('');
+
+  // Hide the modal
+  $('#formModal').modal('hide');
 }
 
 // ? This function is called when a card is dropped into a lane. It updates the status of the task and saves it to localStorage. You can see this function is called in the `droppable` method below.
@@ -219,38 +222,3 @@ $(document).ready(function () {
   $('#taskForm').on('submit', handleTaskFormSubmit);
 });
 
-function handleTaskFormSubmit(event) {
-  event.preventDefault();
-
-  // Read user input from the form
-  const taskName = taskNameInputEl.val().trim();
-  const taskDesc = taskDescInputEl.val().trim(); // Don't need to trim select input
-  const taskDate = taskDateInputEl.val(); // yyyy-mm-dd format
-
-  const newTask = {
-    // Generate a random id for the task
-    id: crypto.randomUUID(),
-    name: taskName,
-    type: taskDesc,
-    dueDate: taskDate,
-    status: 'to-do',
-  };
-
-  // Pull the tasks from localStorage and push the new task to the array
-  const tasks = readTasksFromStorage();
-  tasks.push(newTask);
-
-  // Save the updated tasks array to localStorage
-  saveTasksToStorage(tasks);
-
-  // Print task data back to the screen
-  printTaskData();
-
-  // Clear the form inputs
-  taskNameInputEl.val('');
-  taskDescInputEl.val('');
-  taskDateInputEl.val('');
-
-  // Hide the modal
-  $('#formModal').modal('hide');
-}
