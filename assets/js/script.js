@@ -3,7 +3,7 @@ const timeDisplayEl = $('#time-display');
 const taskDisplayEl = $('#task-display');
 const taskModalEl = $('#modal-body');
 const taskNameInputEl = $('#task-name-input');
-const taskTypeInputEl = $('#task-type-input');
+const taskDescInputEl = $('#task-desc-input');
 const taskDateInputEl = $('#taskDueDate');
 
 // ? Helper function that displays the time, this is called every second in the setInterval function below.
@@ -137,14 +137,14 @@ function handleTaskFormSubmit(event) {
 
   // ? Read user input from the form
   const taskName = taskNameInputEl.val().trim();
-  const taskType = taskTypeInputEl.val(); // don't need to trim select input
+  const taskDesc = taskDescInputEl.val(); // don't need to trim select input
   const taskDate = taskDateInputEl.val(); // yyyy-mm-dd format
 
   const newTask = {
     // ? Here we use a Web API called `crypto` to generate a random id for our task. This is a unique identifier that we can use to find the task in the array. `crypto` is a built-in module that we can use in the browser and Nodejs.    id: crypto.randomUUID(),
     id: crypto.randomUUID(),
     name: taskName,
-    type: taskType,
+    type: taskDesc,
     dueDate: taskDate,
     status: 'to-do',
   };
@@ -161,7 +161,7 @@ function handleTaskFormSubmit(event) {
 
   // ? Clear the form inputs
   taskNameInputEl.val('');
-  taskTypeInputEl.val('');
+  taskDescInputEl.val('');
   taskDateInputEl.val('');
 }
 
