@@ -39,26 +39,27 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body" id="modal-body">
-            <form onsubmit="createTaskCard(task)">
+            <form id="taskForm">
               <label for="task-name-input">Task Name: </label>
               <div class="input-group mb-3">
                 <input type="text" id="task-name-input" name="task-name-input" class="rounded border border-dark">
               </div>
-              
+          
               <label for="taskDueDate">Task Due Date: </label>
               <div class="input-group mb-3">
                 <input type="text" id="taskDueDate" name="taskDueDate" class="rounded border border-dark">
               </div>
-
+          
               <label for="task-desc-input">Task Description: </label>
-              <div class="input-group mb-3">  
+              <div class="input-group mb-3">
                 <input type="text" id="task-desc-input" name="task-desc-input" class="rounded border border-dark">
               </div>
             </form>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-success">Add Task</button>
-          </div>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-success" form="taskForm">Add Task</button>
+          </div>          
         </div>
       </div>
     </div>

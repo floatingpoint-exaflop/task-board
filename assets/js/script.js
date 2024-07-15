@@ -200,17 +200,57 @@ setInterval(displayTime, 1000);
 
 // ? When the document is ready, print the task data to the screen and make the lanes droppable. Also, initialize the date picker.
 $(document).ready(function () {
-  // ? Print task data to the screen on page load if there is any
+  // Print task data to the screen on page load if there is any
   printTaskData();
 
+  // Initialize date picker
   $('#taskDueDate').datepicker({
     changeMonth: true,
     changeYear: true,
   });
 
-  // ? Make lanes droppable
+  // Make lanes droppable
   $('.lane').droppable({
     accept: '.draggable',
     drop: handleDrop,
   });
+
+  // Handle form submission
+  $('#taskForm').on('submit', handleTaskFormSubmit);
 });
+
+function handleTaskFormSubmit(event) {
+  event.preventDefault();
+
+  // Read user input from the form
+  const taskName = taskNameInputEl.val().trim();
+  const taskDesc = taskDescInputEl.val().trim(); // Don't need to trim select input
+  const taskDate = taskDateInputEl.val(); // yyyy-mm-dd format
+
+  const newTask = {
+    // Generate a random id for the task
+    id: crypto.randomUUID(),
+    name: taskName,
+    type: taskDesc,
+    dueDate: taskDate,
+    status: 'to-do',
+  };
+
+  // Pull the tasks from localStorage and push the new task to the array
+  const tasks = readTasksFromStorage();
+  tasks.push(newTask);
+
+  // Save the updated tasks array to localStorage
+  saveTasksToStorage(tasks);
+
+  // Print task data back to the screen
+  printTaskData();
+
+  // Clear the form inputs
+  taskNameInputEl.val('');
+  taskDescInputEl.val('');
+  taskDateInputEl.val('');
+
+  // Hide the modal
+  $('#formModal').modal('hide');
+}
