@@ -40,29 +40,29 @@
           </div>
           <div class="modal-body" id="modal-body">
             <form id="taskForm">
-              <label for="task-name-input">Task Name: </label>
-              <div class="input-group mb-3">
-                <input type="text" id="task-name-input" name="task-name-input" class="rounded border border-dark">
+              <div id="modalTopRow" class="row mb-3">
+                <div class="col-md-6">
+                  <label for="task-name-input">Task Name: </label>
+                  <input type="text" id="task-name-input" name="task-name-input" class="form-control rounded border border-dark">
+                </div>
+                <div class="col-md-6">
+                  <label for="taskDueDate">Task Due Date: </label>
+                  <input type="text" id="taskDueDate" name="taskDueDate" class="form-control rounded border border-dark">
+                </div>
               </div>
-          
-              <label for="taskDueDate">Task Due Date: </label>
-              <div class="input-group mb-3">
-                <input type="text" id="taskDueDate" name="taskDueDate" class="rounded border border-dark">
-              </div>
-          
-              <label for="task-desc-input">Task Description: </label>
-              <div class="input-group mb-3">
-                <input type="text" id="task-desc-input" name="task-desc-input" class="rounded border border-dark">
+              <div id="modalBottomRow" class="mb-3">
+                <label for="task-desc-input">Task Description: </label>
+                <input type="text" id="task-desc-input" name="task-desc-input" class="form-control rounded border border-dark task-desc-input">
               </div>
             </form>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <div class="modal-footer justify-content-center">
             <button type="submit" class="btn btn-success" form="taskForm">Add Task</button>
           </div>          
         </div>
       </div>
     </div>
+    
 
     <div class="row swim-lanes text-center justify-content-between">
       <div class="col-12 col-lg-4 d-flex">

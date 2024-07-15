@@ -1,15 +1,11 @@
-// ? Grab references to the important DOM elements.
-const taskDisplayEl = $('#task-display');
-const taskModalEl = $('#modal-body');
+// ? Grab references to the input DOM elements.
 const taskNameInputEl = $('#task-name-input');
 const taskDescInputEl = $('#task-desc-input');
 const taskDateInputEl = $('#taskDueDate');
 
-// ? Reads tasks from local storage and returns array of task objects.
-// ? If there are no tasks in localStorage, it initializes an empty array ([]) and returns it.
+// ? Reads tasks from localStorage and returns array of task objects - empty if localStorage has no tasks.
 function readTasksFromStorage() {
-  // ? Retrieve tasks from localStorage and parse the JSON to an array.
-  // ? We use `let` here because there is a chance that there are no tasks in localStorage (which means the tasks variable will be equal to `null`) and we will need it to be initialized to an empty array.
+  // ? Retrieve tasks from localStorage and make array
   let tasks = JSON.parse(localStorage.getItem('tasks'));
 
   // ? If no tasks were retrieved from localStorage, assign tasks to a new empty array to push to later.
@@ -21,12 +17,12 @@ function readTasksFromStorage() {
   return tasks;
 }
 
-// ? Accepts an array of tasks, stringifys them, and saves them in localStorage.
+// ? Accepts and stringifys an array of tasks to localStorage.
 function saveTasksToStorage(tasks) {
   localStorage.setItem('tasks', JSON.stringify(tasks));
 }
 
-// ? Creates a task card from the information passed in `task` parameter and returns it.
+// ? Create the task card from submitted data.
 function createTaskCard(task) {
   const taskCard = $('<div>')
     .addClass('card task-card draggable my-3')
@@ -41,12 +37,10 @@ function createTaskCard(task) {
     .attr('data-task-id', task.id);
   cardDeleteBtn.on('click', handleDeleteTask);
 
-  // ? Sets the card background color based on due date. Only apply the styles if the dueDate exists and the status is not done.
+  // ? Yellow for due today cards, Red if overdue.
   if (task.dueDate && task.status !== 'done') {
     const now = dayjs();
     const taskDueDate = dayjs(task.dueDate, 'DD/MM/YYYY');
-
-    // ? If the task is due today, make the card yellow. If it is overdue, make it red.
     if (now.isSame(taskDueDate, 'day')) {
       taskCard.addClass('bg-warning text-white');
     } else if (now.isAfter(taskDueDate)) {
@@ -55,18 +49,18 @@ function createTaskCard(task) {
     }
   }
 
-  // ? Gather all the elements created above and append them to the correct elements.
+  // ? Gather all card elements and append to DOM.
   cardBody.append(cardDescription, cardDueDate, cardDeleteBtn);
   taskCard.append(cardHeader, cardBody);
 
-  // ? Return the card so it can be appended to the correct lane.
+  // ? Return the card to allow append if it moves.
   return taskCard;
 }
 
 function printTaskData() {
   const tasks = readTasksFromStorage();
 
-  // ? Empty existing task cards out of the lanes
+  // ? Clear lanes
   const todoList = $('#todo-cards');
   todoList.empty();
 
@@ -76,7 +70,7 @@ function printTaskData() {
   const doneList = $('#done-cards');
   doneList.empty();
 
-  // ? Loop through tasks and create task cards for each status
+  // ? Loop thru tasks and to get task cards
   for (let task of tasks) {
     if (task.status === 'to-do') {
       todoList.append(createTaskCard(task));
@@ -87,17 +81,16 @@ function printTaskData() {
     }
   }
 
-  // ? Use JQuery UI to make task cards draggable
+  // ? Make cards draggable
   $('.draggable').draggable({
     opacity: 0.7,
     zIndex: 100,
-    // ? This is the function that creates the clone of the card that is dragged. This is purely visual and does not affect the data.
     helper: function (e) {
-      // ? Check if the target of the drag event is the card itself or a child element. If it is the card itself, clone it, otherwise find the parent card  that is draggable and clone that.
+      // ? Need this bit so any child element of the card is still dragging that card as a whole without causing bugs.
       const original = $(e.target).hasClass('ui-draggable')
         ? $(e.target)
         : $(e.target).closest('.ui-draggable');
-      // ? Return the clone with the width set to the width of the original card. This is so the clone does not take up the entire width of the lane. This is to also fix a visual bug where the card shrinks as it's dragged to the right.
+      // ? Fixes width
       return original.clone().css({
         width: original.outerWidth(),
       });
@@ -105,12 +98,12 @@ function printTaskData() {
   });
 }
 
-// ? Removes a task from local storage and prints the task data back to the page
+// ? Removes a task from local storage on demand and updates page
 function handleDeleteTask() {
   const taskId = $(this).attr('data-task-id');
   const tasks = readTasksFromStorage();
 
-  // ? Remove task from the array. There is a method called `filter()` for this that is better suited which we will go over in a later activity. For now, we will use a `forEach()` loop to remove the task.
+  // ? Remove deleted task from array
   tasks.forEach((task) => {
     if (task.id === taskId) {
       tasks.splice(tasks.indexOf(task), 1);
@@ -125,7 +118,7 @@ function handleDeleteTask() {
 }
 
 // ? Adds a task to local storage and prints the task data
-function handleTaskFormSubmit(event) {
+function handleModalSubmit(event) {
   event.preventDefault();
 
   // Read user input from the form
@@ -161,30 +154,30 @@ function handleTaskFormSubmit(event) {
   $('#formModal').modal('hide');
 }
 
-// ? This function is called when a card is dropped into a lane. It updates the status of the task and saves it to localStorage. You can see this function is called in the `droppable` method below.
+//Handles stuff that goes down when we drop a dragged task card
 function handleDrop(event, ui) {
-  // ? Read tasks from localStorage
+  // ? Get tasks
   const tasks = readTasksFromStorage();
 
-  // ? Get the task id from the event
+  // ? Get the task id for the dropped card
   const taskId = ui.draggable[0].dataset.taskId;
 
-  // ? Get the id of the lane that the card was dropped into
+  // ? Get lane id of the lane where we dropped card
   const newStatus = event.target.id;
 
   for (let task of tasks) {
-    // ? Find the task card by the `id` and update the task status.
+    // ? match updated status to id
     if (task.id === taskId) {
       task.status = newStatus;
     }
   }
-  // ? Save the updated tasks array to localStorage (overwritting the previous one) and render the new task data to the screen.
+  // ? Overwrite localStorage with new tasks array & display updated task data.
   localStorage.setItem('tasks', JSON.stringify(tasks));
   printTaskData();
 }
 
 
-// ? When the document is ready, print the task data to the screen and make the lanes droppable. Also, initialize the date picker.
+// ? Date picker, Print task data to screen, make lanes droppable.
 $(document).ready(function () {
   printTaskData();
 
@@ -201,6 +194,5 @@ $(document).ready(function () {
   });
 
   // Handle form submission
-  $('#taskForm').on('submit', handleTaskFormSubmit);
+  $('#taskForm').on('submit', handleModalSubmit);
 });
-
